@@ -1,0 +1,31 @@
+{
+    "name": "pgyf/opensdk-wechat",
+    "description": "微信SDK",
+    "homepage": "https://github.com/pgyf/opensdk-wechat",
+    "keywords": [
+        "easywechat",
+        "wechat",
+        "weixin",
+        "wx",
+        "weixin-sdk",
+        "wechat-sdk",
+        "sdk"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lyf",
+            "email": "381296986@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.1",
+        "pgyf/opensdk-kernel": "*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pgyf\\Opensdk\\Wechat\\": "src/"
+        }
+    }
+}
