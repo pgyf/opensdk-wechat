@@ -70,7 +70,7 @@ class AccessToken implements RefreshableAccessToken
 
     public function getKey(): string
     {
-        return $this->key ?? $this->key = sprintf('work.access_token.%s.%s', $this->corpId, $this->secret);
+        return $this->key ?? $this->key = sprintf('wechat.work.access_token.%s.%s', $this->corpId, $this->secret);
     }
 
     public function setKey(string $key): self

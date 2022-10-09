@@ -123,7 +123,7 @@ class JsApiTicket
 
     public function getKey(): string
     {
-        return $this->key ?? $this->key = sprintf('work.jsapi_ticket.%s', $this->corpId);
+        return $this->key ?? $this->key = sprintf('wechat.work.jsapi_ticket.%s', $this->corpId);
     }
 
     /**

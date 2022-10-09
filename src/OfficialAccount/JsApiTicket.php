@@ -69,6 +69,6 @@ class JsApiTicket extends AccessToken
 
     public function getKey(): string
     {
-        return $this->key ?? $this->key = sprintf('official_account.jsapi_ticket.%s', $this->appId);
+        return $this->key ?? $this->key = sprintf('wechat.official_account.jsapi_ticket.%s', $this->appId);
     }
 }
