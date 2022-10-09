@@ -8,5 +8,9 @@ interface SuiteTicket
 {
     public function getTicket(): string;
 
-    public function setTicket(string $ticket): self;
+    /**
+     * @param string $ticket
+     * @return self
+     */
+    public function setTicket(string $ticket);
 }

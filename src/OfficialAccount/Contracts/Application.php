@@ -9,7 +9,7 @@ use Pgyf\Opensdk\Kernel\Contracts\Config;
 use Pgyf\Opensdk\Kernel\Contracts\Server;
 use Pgyf\Opensdk\Kernel\Encryptor;
 use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenAwareClient;
-//use Overtrue\Socialite\Contracts\ProviderInterface;
+use Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
 use Pgyf\Opensdk\Kernel\Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -34,7 +34,7 @@ interface Application
 
     public function getCache(): CacheInterface;
 
-    //public function getOAuth(): ProviderInterface;
+    public function getOAuth(): ProviderInterface;
 
-    //public function setOAuthFactory(callable $factory): static;
+    public function setOAuthFactory(callable $factory): self;
 }

@@ -13,8 +13,8 @@ use Pgyf\Opensdk\Kernel\Encryptor;
 use Pgyf\Opensdk\Kernel\Exceptions\InvalidArgumentException;
 use Pgyf\Opensdk\Kernel\Exceptions\InvalidConfigException;
 use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenAwareClient;
-use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenExpiredRetryStrategy;
-use Pgyf\Opensdk\Kernel\HttpClient\RequestUtil;
+//use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenExpiredRetryStrategy;
+//use Pgyf\Opensdk\Kernel\HttpClient\RequestUtil;
 use Pgyf\Opensdk\Kernel\HttpClient\Response;
 use Pgyf\Opensdk\Kernel\Traits\InteractWithCache;
 use Pgyf\Opensdk\Kernel\Traits\InteractWithClient;
@@ -23,8 +23,8 @@ use Pgyf\Opensdk\Kernel\Traits\InteractWithHttpClient;
 use Pgyf\Opensdk\Kernel\Traits\InteractWithServerRequest;
 use Pgyf\Opensdk\Wechat\OfficialAccount\Contracts\Account as AccountInterface;
 use Pgyf\Opensdk\Wechat\OfficialAccount\Contracts\Application as ApplicationInterface;
-//use Overtrue\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
-//use Overtrue\Socialite\Providers\WeChat;
+use  Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
+use  Pgyf\Opensdk\Kernel\Socialite\Providers\WeChat;
 use Psr\Log\LoggerAwareTrait;
 use function sprintf;
 use function str_contains;
@@ -177,39 +177,47 @@ class Application implements ApplicationInterface
         return $this;
     }
 
-    // public function setOAuthFactory(callable $factory): static
-    // {
-    //     $this->oauthFactory = fn (Application $app): WeChat => $factory($app);
+    public function setOAuthFactory(callable $factory): self
+    {
+        //$this->oauthFactory = fn (Application $app): WeChat => $factory($app);
+        $this->oauthFactory = function (Application $app) use ($factory){return $factory($app);};
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     /**
      * @throws InvalidArgumentException
      */
-    // public function getOAuth(): SocialiteProviderInterface
-    // {
-    //     if (! $this->oauthFactory) {
-    //         $this->oauthFactory = fn (self $app): SocialiteProviderInterface => (new WeChat(
-    //             [
-    //                 'client_id' => $this->getAccount()->getAppId(),
-    //                 'client_secret' => $this->getAccount()->getSecret(),
-    //                 'redirect_url' => $this->config->get('oauth.redirect_url'),
-    //             ]
-    //         ))->scopes((array) $this->config->get('oauth.scopes', ['snsapi_userinfo']));
-    //     }
+    public function getOAuth(): SocialiteProviderInterface
+    {
+        if (! $this->oauthFactory) {
+            // $this->oauthFactory = fn (self $app): SocialiteProviderInterface => (new WeChat(
+            //     [
+            //         'client_id' => $this->getAccount()->getAppId(),
+            //         'client_secret' => $this->getAccount()->getSecret(),
+            //         'redirect_url' => $this->config->get('oauth.redirect_url'),
+            //     ]
+            // ))->scopes((array) $this->config->get('oauth.scopes', ['snsapi_userinfo']));
+            $this->oauthFactory = function (self $app) {return (new WeChat(
+                [
+                    'client_id' => $app->getAccount()->getAppId(),
+                    'client_secret' => $app->getAccount()->getSecret(),
+                    'redirect_url' => $app->config->get('oauth.redirect_url'),
+                ]
+            ))->scopes((array) $app->config->get('oauth.scopes', ['snsapi_userinfo']));};
+        }
 
-    //     $provider = call_user_func($this->oauthFactory, $this);
+        $provider = call_user_func($this->oauthFactory, $this);
 
-    //     if (! $provider instanceof SocialiteProviderInterface) {
-    //         throw new InvalidArgumentException(sprintf(
-    //             'The factory must return a %s instance.',
-    //             SocialiteProviderInterface::class
-    //         ));
-    //     }
+        if (! $provider instanceof SocialiteProviderInterface) {
+            throw new InvalidArgumentException(sprintf(
+                'The factory must return a %s instance.',
+                SocialiteProviderInterface::class
+            ));
+        }
 
-    //     return $provider;
-    // }
+        return $provider;
+    }
 
     public function getTicket(): JsApiTicket
     {

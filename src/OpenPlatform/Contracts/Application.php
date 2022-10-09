@@ -14,7 +14,7 @@ use Psr\SimpleCache\CacheInterface;
 use Pgyf\Opensdk\Kernel\Symfony\Contracts\HttpClient\HttpClientInterface;
 use Pgyf\Opensdk\Wechat\MiniApp\Application as MiniAppApplication;
 use Pgyf\Opensdk\Wechat\OfficialAccount\Application as OfficialAccountApplication;
-//use Overtrue\Socialite\Contracts\ProviderInterface;
+use Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface;
 use Pgyf\Opensdk\Wechat\OpenPlatform\AuthorizerAccessToken;
 
 interface Application
@@ -37,7 +37,7 @@ interface Application
 
     public function getCache(): CacheInterface;
 
-    //public function getOAuth(): ProviderInterface;
+    public function getOAuth(): ProviderInterface;
 
     /**
      * @param  array<string, mixed>  $config

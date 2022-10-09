@@ -16,8 +16,8 @@ use Pgyf\Opensdk\Kernel\Traits\InteractWithHttpClient;
 use Pgyf\Opensdk\Kernel\Traits\InteractWithServerRequest;
 use Pgyf\Opensdk\Wechat\Work\Contracts\Account as AccountInterface;
 use Pgyf\Opensdk\Wechat\Work\Contracts\Application as ApplicationInterface;
-//use Overtrue\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
-//use Overtrue\Socialite\Providers\WeWork;
+use Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
+use Pgyf\Opensdk\Kernel\Socialite\Providers\WeWork;
 
 class Application implements ApplicationInterface
 {
@@ -157,17 +157,17 @@ class Application implements ApplicationInterface
         ))->setPresets($this->config->all());
     }
 
-    // public function getOAuth(): SocialiteProviderInterface
-    // {
-    //     return (new WeWork(
-    //         [
-    //             'client_id' => $this->getAccount()->getCorpId(),
-    //             'client_secret' => $this->getAccount()->getSecret(),
-    //             'redirect_url' => $this->config->get('oauth.redirect_url'),
-    //         ]
-    //     ))->withApiAccessToken($this->getAccessToken()->getToken())
-    //         ->scopes((array) $this->config->get('oauth.scopes', ['snsapi_base']));
-    // }
+    public function getOAuth(): SocialiteProviderInterface
+    {
+        return (new WeWork(
+            [
+                'client_id' => $this->getAccount()->getCorpId(),
+                'client_secret' => $this->getAccount()->getSecret(),
+                'redirect_url' => $this->config->get('oauth.redirect_url'),
+            ]
+        ))->withApiAccessToken($this->getAccessToken()->getToken())
+            ->scopes((array) $this->config->get('oauth.scopes', ['snsapi_base']));
+    }
 
     public function getTicket(): JsApiTicket
     {

@@ -24,8 +24,8 @@ use Pgyf\Opensdk\Wechat\OfficialAccount\Config as OfficialAccountConfig;
 use Pgyf\Opensdk\Wechat\OpenPlatform\Contracts\Account as AccountInterface;
 use Pgyf\Opensdk\Wechat\OpenPlatform\Contracts\Application as ApplicationInterface;
 use Pgyf\Opensdk\Wechat\OpenPlatform\Contracts\VerifyTicket as VerifyTicketInterface;
-//use Overtrue\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
-//use Overtrue\Socialite\Providers\WeChat;
+use Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
+use Pgyf\Opensdk\Kernel\Socialite\Providers\WeChat;
 use Psr\SimpleCache\InvalidArgumentException;
 use Pgyf\Opensdk\Kernel\Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Pgyf\Opensdk\Kernel\Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -341,19 +341,19 @@ class Application implements ApplicationInterface
         return 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?'.http_build_query($queries);
     }
 
-    // /**
-    //  * @throws \Overtrue\Socialite\Exceptions\InvalidArgumentException
-    //  */
-    // public function getOAuth(): SocialiteProviderInterface
-    // {
-    //     return (new WeChat(
-    //         [
-    //             'client_id' => $this->getAccount()->getAppId(),
-    //             'client_secret' => $this->getAccount()->getSecret(),
-    //             'redirect_url' => $this->config->get('oauth.redirect_url'),
-    //         ]
-    //     ))->scopes((array) $this->config->get('oauth.scopes', ['snsapi_userinfo']));
-    // }
+    /**
+     * @throws \Pgyf\Opensdk\Kernel\Socialite\Exceptions\InvalidArgumentException
+     */
+    public function getOAuth(): SocialiteProviderInterface
+    {
+        return (new WeChat(
+            [
+                'client_id' => $this->getAccount()->getAppId(),
+                'client_secret' => $this->getAccount()->getSecret(),
+                'redirect_url' => $this->config->get('oauth.redirect_url'),
+            ]
+        ))->scopes((array) $this->config->get('oauth.scopes', ['snsapi_userinfo']));
+    }
 
     /**
      * @throws RedirectionExceptionInterface
@@ -476,21 +476,34 @@ class Application implements ApplicationInterface
         return $app;
     }
 
-    // protected function createAuthorizerOAuthFactory(string $authorizerAppId, OfficialAccountConfig $config): Closure
-    // {
-    //     return fn () => (new WeChat(
-    //         [
-    //             'client_id' => $authorizerAppId,
+    protected function createAuthorizerOAuthFactory(string $authorizerAppId, OfficialAccountConfig $config): Closure
+    {
+        // return fn () => (new WeChat(
+        //     [
+        //         'client_id' => $authorizerAppId,
 
-    //             'component' => [
-    //                 'component_app_id' => $this->getAccount()->getAppId(),
-    //                 'component_access_token' => fn () => $this->getComponentAccessToken()->getToken(),
-    //             ],
+        //         'component' => [
+        //             'component_app_id' => $this->getAccount()->getAppId(),
+        //             'component_access_token' => fn () => $this->getComponentAccessToken()->getToken(),
+        //         ],
 
-    //             'redirect_url' => $this->config->get('oauth.redirect_url'),
-    //         ]
-    //     ))->scopes((array) $config->get('oauth.scopes', ['snsapi_userinfo']));
-    // }
+        //         'redirect_url' => $this->config->get('oauth.redirect_url'),
+        //     ]
+        // ))->scopes((array) $config->get('oauth.scopes', ['snsapi_userinfo']));
+
+        return function () use($authorizerAppId, $config) {
+            return (new WeChat(
+                [
+                    'client_id' => $authorizerAppId,
+                    'component' => [
+                        'component_app_id' => $this->getAccount()->getAppId(),
+                        'component_access_token' => function (){return $this->getComponentAccessToken()->getToken();},
+                    ],
+                    'redirect_url' => $this->config->get('oauth.redirect_url'),
+                ]
+            ))->scopes((array) $config->get('oauth.scopes', ['snsapi_userinfo']));
+        }; 
+    }
 
     public function createClient(): AccessTokenAwareClient
     {

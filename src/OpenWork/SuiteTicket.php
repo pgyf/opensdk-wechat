@@ -10,8 +10,8 @@ use function is_string;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use function sprintf;
-use Pgyf\Opensdk\Kernel\Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Pgyf\Opensdk\Kernel\Symfony\Component\Cache\Psr16Cache;
+// use Pgyf\Opensdk\Kernel\Symfony\Component\Cache\Adapter\FilesystemAdapter;
+// use Pgyf\Opensdk\Kernel\Symfony\Component\Cache\Psr16Cache;
 
 class SuiteTicket implements SuiteTicketInterface
 {
@@ -56,9 +56,12 @@ class SuiteTicket implements SuiteTicketInterface
     }
 
     /**
+     * 
+     * @return self
+     * 
      * @throws InvalidArgumentException
      */
-    public function setTicket(string $ticket): self
+    public function setTicket(string $ticket)
     {
         $this->cache->set($this->getKey(), $ticket, 6000);
 

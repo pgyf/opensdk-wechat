@@ -18,8 +18,8 @@ use Pgyf\Opensdk\Kernel\Traits\InteractWithServerRequest;
 use Pgyf\Opensdk\Wechat\OpenWork\Contracts\Account as AccountInterface;
 use Pgyf\Opensdk\Wechat\OpenWork\Contracts\Application as ApplicationInterface;
 use Pgyf\Opensdk\Wechat\OpenWork\Contracts\SuiteTicket as SuiteTicketInterface;
-//use Overtrue\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
-//use Overtrue\Socialite\Providers\OpenWeWork;
+use Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
+use Pgyf\Opensdk\Kernel\Socialite\Providers\OpenWeWork;
 
 class Application implements ApplicationInterface
 {
@@ -300,33 +300,33 @@ class Application implements ApplicationInterface
         ))->setPresets($this->config->all());
     }
 
-    // public function getOAuth(
-    //     string $suiteId,
-    //     AccessTokenInterface $suiteAccessToken = null
-    // ): SocialiteProviderInterface {
-    //     $suiteAccessToken = $suiteAccessToken ?? $this->getSuiteAccessToken();
+    public function getOAuth(
+        string $suiteId,
+        AccessTokenInterface $suiteAccessToken = null
+    ): SocialiteProviderInterface {
+        $suiteAccessToken = $suiteAccessToken ?? $this->getSuiteAccessToken();
 
-    //     return (new OpenWeWork([
-    //         'client_id' => $suiteId,
-    //         'redirect_url' => $this->config->get('oauth.redirect_url'),
-    //     ]))->withSuiteTicket($this->getSuiteTicket()->getTicket())
-    //         ->withSuiteAccessToken($suiteAccessToken->getToken())
-    //         ->scopes((array) $this->config->get('oauth.scopes', ['snsapi_base']));
-    // }
+        return (new OpenWeWork([
+            'client_id' => $suiteId,
+            'redirect_url' => $this->config->get('oauth.redirect_url'),
+        ]))->withSuiteTicket($this->getSuiteTicket()->getTicket())
+            ->withSuiteAccessToken($suiteAccessToken->getToken())
+            ->scopes((array) $this->config->get('oauth.scopes', ['snsapi_base']));
+    }
 
-    // public function getCorpOAuth(
-    //     string $corpId,
-    //     ?AccessTokenInterface $suiteAccessToken = null
-    // ): SocialiteProviderInterface {
-    //     $suiteAccessToken = $suiteAccessToken ?? $this->getSuiteAccessToken();
+    public function getCorpOAuth(
+        string $corpId,
+        ?AccessTokenInterface $suiteAccessToken = null
+    ): SocialiteProviderInterface {
+        $suiteAccessToken = $suiteAccessToken ?? $this->getSuiteAccessToken();
 
-    //     return (new OpenWeWork([
-    //         'client_id' => $corpId,
-    //         'redirect_url' => $this->config->get('oauth.redirect_url'),
-    //     ]))->withSuiteTicket($this->getSuiteTicket()->getTicket())
-    //         ->withSuiteAccessToken($suiteAccessToken->getToken())
-    //         ->scopes((array) $this->config->get('oauth.scopes', ['snsapi_base']));
-    // }
+        return (new OpenWeWork([
+            'client_id' => $corpId,
+            'redirect_url' => $this->config->get('oauth.redirect_url'),
+        ]))->withSuiteTicket($this->getSuiteTicket()->getTicket())
+            ->withSuiteAccessToken($suiteAccessToken->getToken())
+            ->scopes((array) $this->config->get('oauth.scopes', ['snsapi_base']));
+    }
 
     /**
      * @return array<string, mixed>
