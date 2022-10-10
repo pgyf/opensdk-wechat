@@ -25,7 +25,7 @@ $ composer require "pgyf/opensdk-wechat:*@dev" -vvv
 ```php
 <?php
 
-use Pgyf\Opensdk\Wechat\OpenPlatform\Application\Application;
+use Pgyf\Opensdk\Wechat\OpenPlatform\Application;
 
 $config = [
     'app_id' => 'wx3cf0f39249eb0exxx',
