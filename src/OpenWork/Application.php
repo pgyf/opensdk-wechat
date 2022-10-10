@@ -143,7 +143,7 @@ class Application implements ApplicationInterface
                 $this->getRequest()
             );
 
-            $this->server->withDefaultSuiteTicketHandler(function (Message $message, \Closure $next): mixed {
+            $this->server->withDefaultSuiteTicketHandler(function (Message $message, \Closure $next) {
                 if ($message->SuiteId === $this->getAccount()->getSuiteId()) {
                     $this->getSuiteTicket()->setTicket($message->SuiteTicket);
                 }
@@ -302,7 +302,7 @@ class Application implements ApplicationInterface
 
     public function getOAuth(
         string $suiteId,
-        AccessTokenInterface $suiteAccessToken = null
+        ?AccessTokenInterface $suiteAccessToken = null
     ): SocialiteProviderInterface {
         $suiteAccessToken = $suiteAccessToken ?? $this->getSuiteAccessToken();
 

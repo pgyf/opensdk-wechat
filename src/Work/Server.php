@@ -85,7 +85,7 @@ class Server implements ServerInterface
      */
     public function handleContactChanged(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->Event === 'change_contact' ? $handler($message, $next) : $next($message);
         });
 
@@ -97,7 +97,7 @@ class Server implements ServerInterface
      */
     public function handleUserTagUpdated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->Event === 'change_contact' && $message->ChangeType === 'update_tag' ? $handler(
                 $message,
                 $next
@@ -112,7 +112,7 @@ class Server implements ServerInterface
      */
     public function handleUserCreated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->Event === 'change_contact' && $message->ChangeType === 'create_user' ? $handler(
                 $message,
                 $next
@@ -127,7 +127,7 @@ class Server implements ServerInterface
      */
     public function handleUserUpdated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->Event === 'change_contact' && $message->ChangeType === 'update_user' ? $handler(
                 $message,
                 $next
@@ -142,7 +142,7 @@ class Server implements ServerInterface
      */
     public function handleUserDeleted(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->Event === 'change_contact' && $message->ChangeType === 'delete_user' ? $handler(
                 $message,
                 $next
@@ -157,7 +157,7 @@ class Server implements ServerInterface
      */
     public function handlePartyCreated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'create_party' ? $handler(
                 $message,
                 $next
@@ -172,7 +172,7 @@ class Server implements ServerInterface
      */
     public function handlePartyUpdated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'update_party' ? $handler(
                 $message,
                 $next
@@ -187,7 +187,7 @@ class Server implements ServerInterface
      */
     public function handlePartyDeleted(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'delete_party' ? $handler(
                 $message,
                 $next
@@ -202,7 +202,7 @@ class Server implements ServerInterface
      */
     public function handleBatchJobsFinished(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->Event === 'batch_job_result' ? $handler($message, $next) : $next($message);
         });
 
@@ -215,7 +215,7 @@ class Server implements ServerInterface
     public function addMessageListener(string $type, callable $handler): self
     {
         $this->withHandler(
-            function (Message $message, Closure $next) use ($type, $handler): mixed {
+            function (Message $message, Closure $next) use ($type, $handler) {
                 return $message->MsgType === $type ? $handler($message, $next) : $next($message);
             }
         );
@@ -229,7 +229,7 @@ class Server implements ServerInterface
     public function addEventListener(string $event, callable $handler): self
     {
         $this->withHandler(
-            function (Message $message, Closure $next) use ($event, $handler): mixed {
+            function (Message $message, Closure $next) use ($event, $handler) {
                 return $message->Event === $event ? $handler($message, $next) : $next($message);
             }
         );
@@ -254,7 +254,7 @@ class Server implements ServerInterface
 
     protected function decryptRequestMessage(): Closure
     {
-        return function (Message $message, Closure $next): mixed {
+        return function (Message $message, Closure $next) {
             $query = $this->request->getQueryParams();
             $this->decryptMessage(
                 $message,

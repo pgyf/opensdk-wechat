@@ -84,7 +84,7 @@ class Server implements ServerInterface
     {
         $handler = $this->makeClosure($handler);
         $this->withHandler(
-            function (Message $message, Closure $next) use ($type, $handler): mixed {
+            function (Message $message, Closure $next) use ($type, $handler) {
                 return $message->MsgType === $type ? $handler($message, $next) : $next($message);
             }
         );
@@ -102,7 +102,7 @@ class Server implements ServerInterface
     {
         $handler = $this->makeClosure($handler);
         $this->withHandler(
-            function (Message $message, Closure $next) use ($event, $handler): mixed {
+            function (Message $message, Closure $next) use ($event, $handler) {
                 return $message->Event === $event ? $handler($message, $next) : $next($message);
             }
         );
@@ -116,7 +116,7 @@ class Server implements ServerInterface
      */
     protected function decryptRequestMessage(array $query): Closure
     {
-        return function (Message $message, Closure $next) use ($query): mixed {
+        return function (Message $message, Closure $next) use ($query) {
             if (! $this->encryptor) {
                 return null;
             }

@@ -32,8 +32,8 @@ class SuiteTicket implements SuiteTicketInterface
 
     public function __construct(
         string $suiteId,
-        CacheInterface $cache = null,
-        string $key = null
+        ?CacheInterface $cache = null,
+        ?string $key = null
     ) {
         $this->suiteId = $suiteId;
         $this->key = $key;

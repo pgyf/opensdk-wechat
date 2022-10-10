@@ -30,9 +30,9 @@ class VerifyTicket implements VerifyTicketInterface
     protected $cache = null;
 
     public function __construct(
-         string $appId,
-         string $key = null,
-         $cache = null
+        string $appId,
+        ?string $key = null,
+        ?CacheInterface $cache = null
     ) {
         $this->appId = $appId;
         $this->key = $key;

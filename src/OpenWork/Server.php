@@ -53,7 +53,7 @@ class Server implements ServerInterface
     public function __construct(
         Encryptor $encryptor,
         Encryptor $providerEncryptor,
-        ServerRequestInterface $request = null
+        ?ServerRequestInterface $request = null
     ) {
         $this->encryptor = $encryptor;
         $this->providerEncryptor = $providerEncryptor;
@@ -112,7 +112,7 @@ class Server implements ServerInterface
             $this->withoutHandler($this->defaultSuiteTicketHandler);
         }
 
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'suite_ticket' ? $handler($message, $next) : $next($message);
         });
 
@@ -121,7 +121,7 @@ class Server implements ServerInterface
 
     public function handleAuthCreated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'create_auth' ? $handler($message, $next) : $next($message);
         });
 
@@ -130,7 +130,7 @@ class Server implements ServerInterface
 
     public function handleAuthChanged(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_auth' ? $handler($message, $next) : $next($message);
         });
 
@@ -139,7 +139,7 @@ class Server implements ServerInterface
 
     public function handleAuthCancelled(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'cancel_auth' ? $handler($message, $next) : $next($message);
         });
 
@@ -148,7 +148,7 @@ class Server implements ServerInterface
 
     public function handleUserCreated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'create_user' ? $handler(
                 $message,
                 $next
@@ -160,7 +160,7 @@ class Server implements ServerInterface
 
     public function handleUserUpdated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'update_user' ? $handler(
                 $message,
                 $next
@@ -172,7 +172,7 @@ class Server implements ServerInterface
 
     public function handleUserDeleted(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'delete_user' ? $handler(
                 $message,
                 $next
@@ -184,7 +184,7 @@ class Server implements ServerInterface
 
     public function handlePartyCreated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'create_party' ? $handler(
                 $message,
                 $next
@@ -196,7 +196,7 @@ class Server implements ServerInterface
 
     public function handlePartyUpdated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'update_party' ? $handler(
                 $message,
                 $next
@@ -208,7 +208,7 @@ class Server implements ServerInterface
 
     public function handlePartyDeleted(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'delete_party' ? $handler(
                 $message,
                 $next
@@ -220,7 +220,7 @@ class Server implements ServerInterface
 
     public function handleUserTagUpdated(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'change_contact' && $message->ChangeType === 'update_tag' ? $handler(
                 $message,
                 $next
@@ -232,7 +232,7 @@ class Server implements ServerInterface
 
     public function handleShareAgentChanged(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->InfoType === 'share_agent_change' ? $handler($message, $next) : $next($message);
         });
 
@@ -243,7 +243,7 @@ class Server implements ServerInterface
     {
         $query = $this->request->getQueryParams();
 
-        return function (Message $message, Closure $next) use ($query): mixed {
+        return function (Message $message, Closure $next) use ($query) {
             $this->decryptMessage(
                 $message,
                 $this->encryptor,

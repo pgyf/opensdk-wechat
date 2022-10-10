@@ -9,7 +9,7 @@ class Config extends \Pgyf\Opensdk\Kernel\Config
     /**
      * @var array<string>
      */
-    protected array $requiredKeys = [
+    protected $requiredKeys = [
         'app_id',
     ];
 }

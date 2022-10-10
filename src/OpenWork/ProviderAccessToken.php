@@ -46,8 +46,8 @@ class ProviderAccessToken implements RefreshableAccessTokenInterface
         string $corpId,
         string $providerSecret,
         string $key = null,
-        CacheInterface $cache = null,
-        HttpClientInterface $httpClient = null
+        ?CacheInterface $cache = null,
+        ?HttpClientInterface $httpClient = null
     ) {
         $this->corpId = $corpId;
         $this->providerSecret = $providerSecret;

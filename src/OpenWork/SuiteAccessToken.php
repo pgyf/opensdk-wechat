@@ -52,10 +52,10 @@ class SuiteAccessToken implements RefreshableAccessTokenInterface
     public function __construct(
         string $suiteId,
         string $suiteSecret,
-        SuiteTicketInterface $suiteTicket = null,
-        string $key = null,
-        CacheInterface $cache = null,
-        HttpClientInterface $httpClient = null
+        ?SuiteTicketInterface $suiteTicket = null,
+        ?string $key = null,
+        ?CacheInterface $cache = null,
+        ?HttpClientInterface $httpClient = null
     ) {
         $this->suiteId = $suiteId;
         $this->suiteSecret = $suiteSecret;

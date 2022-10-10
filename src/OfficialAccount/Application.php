@@ -177,7 +177,7 @@ class Application implements ApplicationInterface
         return $this;
     }
 
-    public function setOAuthFactory(callable $factory): self
+    public function setOAuthFactory(callable $factory): ApplicationInterface
     {
         //$this->oauthFactory = fn (Application $app): WeChat => $factory($app);
         $this->oauthFactory = function (Application $app) use ($factory){return $factory($app);};

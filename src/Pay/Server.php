@@ -88,7 +88,7 @@ class Server implements ServerInterface
      */
     public function handlePaid(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return $message->getEventType() === 'TRANSACTION.SUCCESS' && $message->trade_state === 'SUCCESS'
                 ? $handler($message, $next) : $next($message);
         });
@@ -103,7 +103,7 @@ class Server implements ServerInterface
      */
     public function handleRefunded(callable $handler): self
     {
-        $this->with(function (Message $message, Closure $next) use ($handler): mixed {
+        $this->with(function (Message $message, Closure $next) use ($handler) {
             return in_array($message->getEventType(), [
                 'REFUND.SUCCESS',
                 'REFUND.ABNORMAL',

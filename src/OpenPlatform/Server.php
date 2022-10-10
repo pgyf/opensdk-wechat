@@ -49,7 +49,7 @@ class Server implements ServerInterface
      */
     public function __construct(
         Encryptor $encryptor,
-        ServerRequestInterface $request = null
+        ?ServerRequestInterface $request = null
     ) {
         $this->encryptor = $encryptor;
         $this->request = $request ?? RequestUtil::createDefaultServerRequest();

@@ -22,9 +22,9 @@ class Account implements AccountInterface
 
     public function __construct(
         string $appId,
-        string $secret,
-        string $token = null,
-        string $aesKey = null
+        ?string $secret,
+        ?string $token = null,
+        ?string $aesKey = null
     ) {
         $this->appId    = $appId;
         $this->secret   = $secret;

@@ -8,7 +8,8 @@ use Pgyf\Opensdk\Kernel\Contracts\RefreshableAccessToken as RefreshableAccessTok
 use Pgyf\Opensdk\Kernel\Exceptions\HttpException;
 use Pgyf\Opensdk\Wechat\OpenPlatform\Contracts\VerifyTicket as VerifyTicketInterface;
 use Pgyf\Opensdk\Kernel\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Pgyf\Opensdk\Kernel\Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\SimpleCache\CacheInterface;
 
 use function abs;
 use function intval;
@@ -41,21 +42,27 @@ class ComponentAccessToken implements RefreshableAccessTokenInterface
      */
     protected  $httpClient;
 
+    /**
+     * @var CacheInterface
+     */
+    protected $cache;
 
     public function __construct(
         string $appId,
         string $secret,
         $verifyTicket,
-        string $key = null,
-        $cache = null,
-        $httpClient = null
+        ?string $key = null,
+        ?CacheInterface $cache = null,
+        ?HttpClientInterface $httpClient = null
     ) {
         $this->appId            = $appId;
         $this->secret           = $secret;
         $this->verifyTicket     = $verifyTicket;
         $this->key              = $key;
-        $this->cache = $cache;
         $this->httpClient = $httpClient ?? HttpClient::create(['base_uri' => 'https://api.weixin.qq.com/']);
+        if(!empty($cache)){
+            $this->cache = $cache;
+        }
     }
 
     public function getKey(): string
