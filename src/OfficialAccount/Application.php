@@ -13,8 +13,8 @@ use Pgyf\Opensdk\Kernel\Encryptor;
 use Pgyf\Opensdk\Kernel\Exceptions\InvalidArgumentException;
 use Pgyf\Opensdk\Kernel\Exceptions\InvalidConfigException;
 use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenAwareClient;
-//use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenExpiredRetryStrategy;
-//use Pgyf\Opensdk\Kernel\HttpClient\RequestUtil;
+use Pgyf\Opensdk\Kernel\HttpClient\AccessTokenExpiredRetryStrategy;
+use Pgyf\Opensdk\Kernel\HttpClient\RequestUtil;
 use Pgyf\Opensdk\Kernel\HttpClient\Response;
 use Pgyf\Opensdk\Kernel\Traits\InteractWithCache;
 use Pgyf\Opensdk\Kernel\Traits\InteractWithClient;
@@ -25,9 +25,9 @@ use Pgyf\Opensdk\Wechat\OfficialAccount\Contracts\Account as AccountInterface;
 use Pgyf\Opensdk\Wechat\OfficialAccount\Contracts\Application as ApplicationInterface;
 use  Pgyf\Opensdk\Kernel\Socialite\Contracts\ProviderInterface as SocialiteProviderInterface;
 use  Pgyf\Opensdk\Kernel\Socialite\Providers\WeChat;
+use Pgyf\Opensdk\Kernel\Support\Str;
 use Psr\Log\LoggerAwareTrait;
 use function sprintf;
-use function str_contains;
 //use Symfony\Component\HttpClient\Response\AsyncContext;
 //use Symfony\Component\HttpClient\RetryableHttpClient;
 
@@ -264,20 +264,49 @@ class Application implements ApplicationInterface
             //failureJudge: fn (Response $response) => (bool) ($response->toArray()['errcode'] ?? 0),
             function(Response $response){return  (bool) ($response->toArray()['errcode'] ?? 0); },
             (bool) $this->config->get('http.throw', true)
-        ))->setPresets($this->config->all());
+        ))->setPresets($this->config->all())->retrySetStrategy($this->getRetryStrategy(), (int)$this->config->get('http.max_retries', 1));
     }
 
-    // public function getRetryStrategy(): AccessTokenExpiredRetryStrategy
-    // {
-    //     $retryConfig = RequestUtil::mergeDefaultRetryOptions((array) $this->config->get('http.retry', []));
+    public function getRetryStrategy(): AccessTokenExpiredRetryStrategy
+    {
+        // $retryConfig = RequestUtil::mergeDefaultRetryOptions((array) $this->config->get('http.retry', []));
 
-    //     return (new AccessTokenExpiredRetryStrategy($retryConfig))
-    //         ->decideUsing(function (AsyncContext $context, ?string $responseContent): bool {
-    //             return ! empty($responseContent)
-    //                 && str_contains($responseContent, '42001')
-    //                 && str_contains($responseContent, 'access_token expired');
-    //         });
-    // }
+        // return (new AccessTokenExpiredRetryStrategy($retryConfig))
+        //     ->decideUsing(function (AsyncContext $context, ?string $responseContent): bool {
+        //         return ! empty($responseContent)
+        //             && str_contains($responseContent, '42001')
+        //             && str_contains($responseContent, 'access_token expired');
+        //     });
+
+        $retry = $this->config->get('http.retry', []);
+        if(is_bool($retry)){
+            if($retry === false){
+                return null;
+            }
+            $retry = [];
+        }
+        $retryConfig = RequestUtil::mergeDefaultRetryOptions($retry);
+        $strategy = new AccessTokenExpiredRetryStrategy(
+            // @phpstan-ignore-next-line
+            (array) $retryConfig['status_codes'],
+            // @phpstan-ignore-next-line
+            (int) $retryConfig['delay'],
+            // @phpstan-ignore-next-line
+            (float) $retryConfig['multiplier'],
+            // @phpstan-ignore-next-line
+            (int) $retryConfig['max_delay'],
+            // @phpstan-ignore-next-line
+            (float) $retryConfig['jitter']
+        );
+
+        return $strategy
+        ->decideUsing(function ($context, ?string $responseContent) {
+            return ! empty($responseContent)
+                && Str::contains($responseContent, '42001')
+                && Str::contains($responseContent, 'access_token expired');
+        });
+
+    }
 
     /**
      * @return array<string,mixed>
