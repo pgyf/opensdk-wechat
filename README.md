@@ -15,7 +15,7 @@
 ## Installation
 
 ```shell
-$ composer require "pgyf/opensdk-wechat:^0.0.1" -vvv
+$ composer require pgyf/opensdk-wechat:0.0.1 -vvv
 ```
 
 ## Usage
