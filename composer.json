@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "pgyf/opensdk-kernel": "*@dev"
+        "pgyf/opensdk-kernel": "^0.0.1"
     },
     "autoload": {
         "psr-4": {
