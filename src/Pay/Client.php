@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Pgyf\Opensdk\Wechat\Pay;
 
-use Pgyf\Opensdk\Kernel\Exceptions\InvalidArgumentException;
-use Pgyf\Opensdk\Kernel\Exceptions\InvalidConfigException;
+//use Pgyf\Opensdk\Kernel\Exceptions\InvalidArgumentException;
+//use Pgyf\Opensdk\Kernel\Exceptions\InvalidConfigException;
 use Pgyf\Opensdk\Kernel\HttpClient\HttpClientMethods;
 use Pgyf\Opensdk\Kernel\HttpClient\RequestUtil;
 use Pgyf\Opensdk\Kernel\HttpClient\RequestWithPresets;
 use Pgyf\Opensdk\Kernel\HttpClient\Response;
-use Pgyf\Opensdk\Kernel\Support\PrivateKey;
-use Pgyf\Opensdk\Kernel\Support\PublicKey;
+//use Pgyf\Opensdk\Kernel\Support\PrivateKey;
+//use Pgyf\Opensdk\Kernel\Support\PublicKey;
 use Pgyf\Opensdk\Kernel\Support\UserAgent;
 use Pgyf\Opensdk\Kernel\Support\Xml;
-use Pgyf\Opensdk\Kernel\Traits\MockableHttpClient;
+//use Pgyf\Opensdk\Kernel\Traits\MockableHttpClient;
 use Exception;
 use function is_array;
 use function is_string;
@@ -144,11 +144,18 @@ class Client implements HttpClientInterface
         }
 
         // 合并通过 withHeader 和 withHeaders 设置的信息
-        if (! empty($this->prependHeaders)) {
+        if (!empty($this->prependHeaders)) {
             $options['headers'] = array_merge($this->prependHeaders, $options['headers'] ?? []);
         }
 
-        return new Response($this->client->request($method, $url, $options), null, $this->throw);
+        //return new Response($this->client->request($method, $url, $options), null, $this->throw);
+        return new Response(
+            $this->client->request($method, $url, $options), 
+            $this->isV3Request($url) ? null : function (Response $response){
+                return $response->toArray()['result_code'] === 'FAIL' || $response->toArray()['return_code'] === 'FAIL';
+            },
+            $this->throw
+        );
     }
 
     protected function isV3Request(string $url): bool
